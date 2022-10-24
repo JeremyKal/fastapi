@@ -117,10 +117,11 @@ def update_post(post_id: int, post: schemas.PostCreate, db:orm.Session = Depends
 
 #-------------------------- STATIC FILES
 
-app.mount("/static/html", StaticFiles(directory="static"), name="static")
+app.mount("/static/", StaticFiles(directory="static"), name="static")
 
 @app.get("/static/images/{image_name}", tags=["Static Images"])
 def get_static_image(image_name: str):
+    # different behavior png and jpeg. MIME types ?
     return responses.FileResponse(f"static/images/{image_name}", media_type="image/png", filename=image_name)
 
 

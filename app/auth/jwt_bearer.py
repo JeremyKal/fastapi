@@ -8,8 +8,9 @@ import services
 
 #used to persist authentication on the routes
 class JwtBearer(HTTPBearer):
+    # enable automatic error reporting
     def __init__(self, auto_Error: bool = True):
-        #super().__init__(auto_error=auto_Error) ? super to call inherited class
+        #super().__init__(auto_error=auto_Error) ? super to init inherited class
         super(JwtBearer, self).__init__(auto_error=auto_Error)
 
     # make instance behave like function and be called like function
@@ -18,19 +19,18 @@ class JwtBearer(HTTPBearer):
         if credentials:
             if not credentials.scheme == "Bearer":
                 raise HTTPException(status_code=403, detail="Invalid token")
+            if not self.verify_jwt(credentials.credentials):
+                raise HTTPException(status_code=403, detail="Invalid token")
             return credentials.credentials
         else:
             raise HTTPException(status_code=403, detail="Invalid token")
 
     def verify_jwt(self, jwt_token: str) -> bool:
-        
-        # db = services.get_db()
-        # # check if token blacklisted
-        # blacklisted_token = db.query(models.TokenBlacklist).filter(models.TokenBlacklist.token == jwt_token).first()
-        # if blacklisted_token:
-        #     return False
-
-        payload = decodeJWT(jwt_token)
+                
+        try:
+            payload = decodeJWT(jwt_token)
+        except:
+            payload = None
         return bool(payload)
 
     

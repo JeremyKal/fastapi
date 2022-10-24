@@ -10,6 +10,7 @@ class User(Base):
     hashed_password = sql.Column(sql.String)
     is_active = sql.Column(sql.Boolean, default=True)
     posts = orm.relationship("Post", back_populates="owner")
+    # is_admin = sql.Column(sql.Boolean, default=False)
     
     
 class Post(Base):
